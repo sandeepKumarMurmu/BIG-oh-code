@@ -1,0 +1,5 @@
+# ignore nore modules
+/node_modules
+
+#Ignore environment file
+# .env  # .env file is not ignored to show what are the invironment variable are used
