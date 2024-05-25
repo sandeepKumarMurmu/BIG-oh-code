@@ -40,7 +40,6 @@ async function validationMiddle(req, res, next) {
     }
 }
 
-
 /**
  * Controller function to handle user creation.
  * @param {Object} req - Express request object
@@ -81,6 +80,59 @@ async function userController(req, res) {
         return mainApiResponse(res, 'failed', err?.message, []);
     }
 }
+
+
+/**
+ * Controller function to handle user update.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+async function userUpdateController(req, res) {
+    try {
+        // Extract 'title' from request query parameters
+        const { title = "" } = req.query;
+
+        // Extract 'name', 'email', 'phonenumber', and 'isGraduate' from request body
+        const { name = "", email = "", phonenumber = "", isGraduate = "" } = req.body;
+
+        // Check if user with the provided title already exists
+        const existingData = await findUser({ title: title }, [], true, []);
+
+        // If user with the provided title already exists, return failure response
+        if (!existingData?.status || !existingData?.data?.length) {
+            return mainApiResponse(res, "failed", "No record found.", []);
+        }
+
+        // Prepare object to update existing user
+        const update_obj = {
+            name,
+            email,
+            phonenumber,
+            isGraduate,
+            updatedDate: new Date()
+        };
+
+        const where_obj = {
+            title
+        };
+
+        // Perform user update operation
+        const updated_data = await updateUser(update_obj, where_obj);
+
+        // Handle update operation result
+        if (!updated_data.status) {
+            return mainApiResponse(res, "failed", updated_data?.msg, []);
+        }
+
+        // Return success response
+        return mainApiResponse(res, "success", updated_data?.msg, []);
+    }
+    catch (err) {
+        // Return an error response if an error occurs
+        return mainApiResponse(res, 'failed', err?.message, []);
+    }
+}
+
 
 
 /**
@@ -159,8 +211,38 @@ async function findUser(where_obj = {}, attribute_arr = [], raw = false, order_b
     }
 }
 
+/**
+ * Asynchronous function to update user data in the database.
+ * @param {Object} update_obj - Object containing data to update
+ * @param {Object} where_obj - Object containing conditions to identify the user to update
+ * @returns {Object} - Object containing status, message, and updated data
+ */
+async function updateUser(update_obj = {}, where_obj = {}) {
+    try {
+        // Check if update_obj and where_obj contain valid data
+        if (!Object.keys(update_obj)?.length || !Object.keys(where_obj)?.length) {
+            return functionResponse(false, "Invalid data provided to update user.", []);
+        }
+
+        // Import the master_user model
+        const master_user = require("../../../modles/master_user")(MASTER_DB, DataTypes);
+
+        // Perform the update operation
+        const data = await master_user.update(update_obj, { where: where_obj });
+
+        // Return a successful response
+        return functionResponse(true, "User updated successfully", data);
+    }
+    catch (err) {
+        // Return an error response if an error occurs during user update
+        return functionResponse(false, err?.message, []);
+    }
+}
+
+
 // exporting fucntion
 module.exports = {
     validationMiddle,
-    userController
+    userController,
+    userUpdateController
 }
