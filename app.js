@@ -9,10 +9,16 @@ const bodyParser = require('body-parser');
 // Accessing environment variables
 const APP_PORT = process.env.APP_PORT;
 const BASE_URL = process.env.BASE_URL;
+const APP_NAME = process.env.APP_NAME;
 
-// Importing app files 
-// specially in here route file is imported to access end points
-const routes = require("./routes/api");
+// Importing app files / functions / methodes
+const routes = require("./routes/api"); // specially in here route file is imported to access end points
+const { connectionCheck } = require("./helpers/connectionCheck/dbConnectionCheck");
+
+// importing db connections
+const master_connection = require("./connections/master_connection");
+const slave_connection = require("./connections/slav_connection");
+
 
 // Initiating Express app
 const app = express();
@@ -34,6 +40,8 @@ app.get('*', jsonParser, function (req, res) {
 
 // app listing function
 app.listen(APP_PORT, function () {
-    console.log(`Examples app listening at ${BASE_URL}${APP_PORT}`)
+    console.log(`${APP_NAME} is listening at ${BASE_URL}${APP_PORT}`);
+    connectionCheck(master_connection, "Master DB");
+    connectionCheck(slave_connection, "Slave DB");
 })
 
