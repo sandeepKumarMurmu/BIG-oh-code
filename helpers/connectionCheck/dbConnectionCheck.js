@@ -1,8 +1,7 @@
-require("dotenv").config();
+require("dotenv").config(); // Load environment variables from .env file
 
-// accessing environment variables
-const IS_CODING_ENV_DEV = process.env.CODING_ENV == "dev" ? true : false;
-
+// // Accessing environment variables
+// const IS_CODING_ENV_DEV = process.env.CODING_ENV == "dev" ? true : false; // Check if the environment is development
 
 /**
  * Checks the connection to a database and logs the result.
@@ -12,14 +11,15 @@ const IS_CODING_ENV_DEV = process.env.CODING_ENV == "dev" ? true : false;
 function connectionCheck(db, name) {
     db.authenticate().then(
         () => {
-            console.log(`${name} Db connected successfully.....................`);
+            console.log(`${name} Db connected successfully.....................`); // Log successful connection
         }
     ).catch((err) => {
-        console.log(`Unable to connect ${name} db............................`);
-        IS_CODING_ENV_DEV && console.log("err : ", err);
+        console.log(`Unable to connect ${name} db............................`); // Log failed connection
+        console.log("err : ", err); // Log error if in development environment
     });
 }
 
+// Export the connectionCheck function
 module.exports = {
     connectionCheck
 }

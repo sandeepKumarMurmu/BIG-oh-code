@@ -133,6 +133,51 @@ async function userUpdateController(req, res) {
     }
 }
 
+/*
+  Asynchronous function to handle user list retrieval.
+
+  Parameters:
+    - req: Express request object
+    - res: Express response object
+*/
+async function userListController(req, res) {
+    try {
+
+        // Extract 'title' from request query parameters
+        const { title = "" } = req.query;
+
+        // Initialize an empty object for the WHERE clause and an array for attributes
+        let where_obj = {}
+        let attribute_arr = [
+            [SLAVE_DB.col('uniqueId'), 'unique_id'],
+            "title",
+            [SLAVE_DB.literal(`CASE WHEN name is null then '-' else name end`), 'name'],
+            [SLAVE_DB.literal(`CASE WHEN name is null then '-' else name end`), 'name'],
+            [SLAVE_DB.literal(`CASE WHEN phonenumber is null then '-' else phonenumber end`), 'phonenumber'],
+            [SLAVE_DB.literal(`CASE WHEN isGraduate then 'True' else 'False' end`), 'isGraduate'],
+        ]
+
+        // If 'title' is provided and trimmed, add it to the WHERE clause
+        if (title?.trim()) {
+            where_obj.title = title;
+        }
+
+        // Fetch user data based on the provided conditions
+        const fetchData = await findUser(where_obj, attribute_arr, true, []);
+
+        // If no data is found, return a failure response
+        if (!fetchData?.status || !fetchData?.data?.length) {
+            return mainApiResponse(res, 'failed', "No record found.", [])
+        }
+
+        // If user retrieval is successful, return success response with user data
+        return mainApiResponse(res, "success", fetchData?.msg, fetchData?.data);
+    }
+    catch (err) {
+        // Return an error response if an error occurs
+        return mainApiResponse(res, 'failed', err?.message, []);
+    }
+}
 
 
 /**
@@ -244,5 +289,6 @@ async function updateUser(update_obj = {}, where_obj = {}) {
 module.exports = {
     validationMiddle,
     userController,
-    userUpdateController
+    userUpdateController,
+    userListController
 }

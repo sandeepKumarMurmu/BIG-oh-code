@@ -5,7 +5,7 @@ const { body, query } = require("express-validator");
 const USER_NAME_REJEX = /^[a-zA-Z0-9_.]+$/; //
 
 // importing function / methodes to 
-const { validationMiddle, userController, userUpdateController } = require("../serveice/userService");
+const { validationMiddle, userController, userUpdateController, userListController } = require("../serveice/userService");
 
 /*
   Array containing middleware functions for form creation validation and user controller.
@@ -27,14 +27,14 @@ const { validationMiddle, userController, userUpdateController } = require("../s
     - The 'userController' middleware handles the form creation process or other user-related actions.
 */
 const formCreation = [
-    body("title").trim().isLength({ min: 4 }).withMessage("Invalid title.").bail().custom((title) => {
-        if (!USER_NAME_REJEX.test(title)) {
-            return false;
-        }
-        return true;
-    }).withMessage("Invalid title."),
-    validationMiddle, // Assuming this is defined elsewhere
-    userController // Assuming this is defined elsewhere
+  body("title").trim().isLength({ min: 4 }).withMessage("Invalid title.").bail().custom((title) => {
+    if (!USER_NAME_REJEX.test(title)) {
+      return false;
+    }
+    return true;
+  }).withMessage("Invalid title."),
+  validationMiddle, // Assuming this is defined elsewhere
+  userController // Assuming this is defined elsewhere
 ];
 
 
@@ -78,31 +78,36 @@ const formCreation = [
     - The 'userUpdateController' middleware handles the user update process.
 */
 const formFilling = [
-    query("title").trim().isLength({ min: 4 }).withMessage("Invalid title.").bail().custom((title) => {
-        if (!USER_NAME_REJEX.test(title)) {
-            return false;
-        }
-        return true;
-    }).withMessage("Invalid title."),
-    body("name").trim().isLength({ min: 3 }).withMessage("Invalid name format.").bail().isAlpha('en-US', { ignore: ' ' }).withMessage("Invalid name format."),
-    body('email').trim().isLength({ min: 8 }).withMessage("Invalid email format.").bail().isEmail().withMessage("Invalid email format1"),
-    body("phonenumber").trim().isLength({ min: 10 }).withMessage("Ivalid mobile number format.").bail().isMobilePhone('any', { strictMode: false }).withMessage("Invalid mobile number."),
-    body('isGraduate').trim().isBoolean().withMessage("Invlaid graduation status."),
-    validationMiddle, // Assuming this is defined elsewhere
-    userUpdateController // Assuming this is defined elsewhere
+  query("title").trim().isLength({ min: 4 }).withMessage("Invalid title.").bail().custom((title) => {
+    if (!USER_NAME_REJEX.test(title)) {
+      return false;
+    }
+    return true;
+  }).withMessage("Invalid title."),
+  body("name").trim().isLength({ min: 3 }).withMessage("Invalid name format.").bail().isAlpha('en-US', { ignore: ' ' }).withMessage("Invalid name format."),
+  body('email').trim().isLength({ min: 8 }).withMessage("Invalid email format.").bail().isEmail().withMessage("Invalid email format1"),
+  body("phonenumber").trim().isLength({ min: 10 }).withMessage("Ivalid mobile number format.").bail().isMobilePhone('any', { strictMode: false }).withMessage("Invalid mobile number."),
+  body('isGraduate').trim().isBoolean().withMessage("Invlaid graduation status."),
+  validationMiddle, // Assuming this is defined elsewhere
+  userUpdateController // Assuming this is defined elsewhere
 ];
 
 
 
+/*
+  Middleware array for handling form list retrieval.
+
+  Middleware:
+    - userListController: Controller function to retrieve a list of users. It is assumed that this controller handles the logic for fetching the list of users and returning the appropriate response.
+*/
 const formList = [
-    async (req, res) => {
-        return res.json({ message: "From listed successfully." })
-    }
+  userListController
 ]
 
 
+
 module.exports = {
-    formCreation,
-    formFilling,
-    formList
+  formCreation,
+  formFilling,
+  formList
 }

@@ -1,4 +1,9 @@
-
+/**
+ * Define the master_user model using Sequelize.
+ * @param {Object} sequelize - The Sequelize instance.
+ * @param {Object} DataTypes - The data types provided by Sequelize.
+ * @returns {Object} - The master_user model.
+ */
 module.exports = (sequelize, DataTypes) => {
     const master_user = sequelize.define('master_user',
         {
@@ -45,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         {
-            tableName: 'master_user',
+            tableName: 'master_user', // Set the table name
             collate: 'utf8mb4_0900_ai_ci', // Optional: Set collate
             charset: 'utf8mb4', // Optional: Set charset
             comment: 'test', // Optional: Set table comment
