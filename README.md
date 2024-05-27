@@ -67,12 +67,12 @@ Big-OhUser is a comprehensive user management system empowering users to effortl
 - **Method:** POST   
 - **Body:**
  ```json
-         {
-                "name": "Sandeep Kumar", // User name: alphabetical characters with single space
-                "email": "sandeep@gmail.com", // Valid email
-                "phonenumber": "9577224499", // Minimum 10 digits, numeric only
-                "isGraduate": "false" // Boolean value only
-         }
+ {
+    "name": "Sandeep Kumar", // User name: alphabetical characters with single space
+    "email": "sandeep@gmail.com", // Valid email
+    "phonenumber": "9577224499", // Minimum 10 digits, numeric only
+    "isGraduate": "false" // Boolean value only
+ }
  ```
 - **Query:** title // An alphanumeric character with underscore ('_') allowed.
 - **Explanation:** This endpoint empowers users to fill out and edit the form with their details, ensuring that each field is compulsory.
@@ -168,3 +168,8 @@ curl --location 'http://localhost:8080/user-api/fill_data'
 ```json
 curl --location 'http://localhost:8080/user-api/fill_data?title=sandeep_123'
 ```
+
+
+# Contact:
+Feel free to contact me for more information.
+- **Email:** sandeep.16murmu@gamil.com
